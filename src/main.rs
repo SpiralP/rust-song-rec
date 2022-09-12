@@ -83,13 +83,10 @@ fn main() {
         "file.wav".to_string()
     };
 
-    println!("make_signature_from_file");
     let signature = SignatureGenerator::make_signature_from_file(&path).unwrap();
 
-    println!("try_recognize_song");
     let result = try_recognize_song(signature).unwrap();
 
-    println!("{}", result.track_key);
     println!("{}", result.album_name.unwrap_or_default());
     println!("{} by {}", result.song_name, result.artist_name);
 }
