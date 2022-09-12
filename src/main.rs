@@ -11,6 +11,7 @@ mod core {
 }
 
 use std::{
+    env::args,
     fs::File,
     io::BufWriter,
     sync::{Arc, Mutex},
@@ -21,7 +22,9 @@ use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use crate::{core::http_thread::try_recognize_song, fingerprinting::algorithm::SignatureGenerator};
 
 fn main() {
-    if true {
+    let path = if let Some(path) = args().nth(1) {
+        path
+    } else {
         let host = cpal::default_host();
         println!("{:#?}", host.id());
 
@@ -76,18 +79,19 @@ fn main() {
 
         writer.lock().unwrap().take().unwrap().finalize().unwrap();
         drop(writer);
-    }
+
+        "file.wav".to_string()
+    };
 
     println!("make_signature_from_file");
-    let signature = SignatureGenerator::make_signature_from_file("file.wav").unwrap();
+    let signature = SignatureGenerator::make_signature_from_file(&path).unwrap();
 
     println!("try_recognize_song");
     let result = try_recognize_song(signature).unwrap();
 
-    println!("{:#?}", result.song_name);
-    println!("{:#?}", result.album_name);
-    println!("{:#?}", result.artist_name);
-    println!("{:#?}", result.track_key);
+    println!("{}", result.track_key);
+    println!("{}", result.album_name.unwrap_or_default());
+    println!("{} by {}", result.song_name, result.artist_name);
 }
 
 type WavWriterHandle = Arc<Mutex<Option<hound::WavWriter<BufWriter<File>>>>>;
