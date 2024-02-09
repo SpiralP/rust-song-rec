@@ -1,23 +1,20 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
   };
 
   outputs = { nixpkgs, ... }:
     let
       inherit (nixpkgs) lib;
-    in
-    {
-      packages = lib.genAttrs lib.systems.flakeExposed (system:
+
+      makePackage = (system: dev:
         let
           pkgs = import nixpkgs {
             inherit system;
           };
-
-          inherit (pkgs) rustPlatform dockerTools buildNpmPackage;
         in
         rec {
-          default = rustPlatform.buildRustPackage {
+          default = pkgs.rustPlatform.buildRustPackage {
             name = "songrec";
             src = lib.cleanSourceWith rec {
               src = ./.;
@@ -36,10 +33,18 @@
                   ]
                 );
             };
-            cargoSha256 = "sha256-zVVBIxOsuXCuXqbUbOur5jRuJI1SEzGRiWSmgW8L84k=";
+
+            cargoSha256 = "sha256-77ILtEwtIoR0enLWilS5U39yrRc2rfYO/Q/JjHKXnRI=";
+
             nativeBuildInputs = with pkgs; [
               pkg-config
-            ];
+            ] ++ (if dev then
+              with pkgs; with pkgs.gst_all_1; [
+                clippy
+                rustfmt
+                rust-analyzer
+              ] else [ ]);
+
             buildInputs = with pkgs; [
               alsa-lib
               openssl
@@ -47,7 +52,13 @@
 
             doCheck = false;
           };
-        }
-      );
-    };
+        });
+    in
+    builtins.foldl' lib.recursiveUpdate { } (builtins.map
+      (system: {
+        devShells.${system} = makePackage system true;
+        packages.${system} = makePackage system false;
+      }
+      )
+      lib.systems.flakeExposed);
 }
