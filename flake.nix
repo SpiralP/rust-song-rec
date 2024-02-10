@@ -34,7 +34,9 @@
                 );
             };
 
-            cargoSha256 = "sha256-77ILtEwtIoR0enLWilS5U39yrRc2rfYO/Q/JjHKXnRI=";
+            cargoLock = {
+              lockFile = ./Cargo.lock;
+            };
 
             nativeBuildInputs = with pkgs; [
               pkg-config

@@ -252,7 +252,7 @@ impl DecodedSignature {
         cursor.write_u32::<LittleEndian>(0)?; // size_minus_header - Will write later
 
         let mut sorted_iterator: Vec<_> = self.frequency_band_to_sound_peaks.iter().collect();
-        sorted_iterator.sort_by(|x, y| x.0.cmp(&y.0));
+        sorted_iterator.sort_by(|x, y| x.0.cmp(y.0));
 
         for (frequency_band, frequency_peaks) in sorted_iterator {
             let mut peaks_cursor = Cursor::new(vec![]);

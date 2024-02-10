@@ -14,23 +14,23 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-chfft = "0.3" # Fast Fourier transform
-byteorder = "1" # Used for reading and writing binary structures
-crc32fast = "1" # Used for the CRC-32 checksum in the binary signature
-base64 = "0.13"
+chfft = "0.3"                                                   # Fast Fourier transform
+byteorder = "1"                                                 # Used for reading and writing binary structures
+crc32fast = "1"                                                 # Used for the CRC-32 checksum in the binary signature
+base64 = "0.21"
 reqwest = { version = "0.11", features = ["blocking", "json"] }
-rodio = "0.15" # For reading WAV/MP3/FLAG/OGG files, resampling and playing audio.
-clap = "3" # For argument parsing
-cpal = "0.13" # For recording audio
-hound = "3" # For writing WAV files
-serde_json = "1" # For decoding and encoding JSON
-uuid = { version = "0.8", features = ["v4"] }
+rodio = "0.17"                                                  # For reading WAV/MP3/FLAG/OGG files, resampling and playing audio.
+clap = "3"                                                      # For argument parsing
+cpal = "0.14"                                                   # For recording audio
+hound = "3"                                                     # For writing WAV files
+serde_json = "1"                                                # For decoding and encoding JSON
+uuid = { version = "1", features = ["v4"] }
 serde = { version = "1", features = ["derive"] }
 csv = "1"
 regex = "1"
 rand = "0.8"
 tempfile = "3"
-chrono = { version = "0.4" } # For formatting dates
+chrono = { version = "0.4" }                                    # For formatting dates
 
 [features]
 default = []
